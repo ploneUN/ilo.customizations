@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<import-steps>
+
+    <import-step
+        id="embed-enable"
+        handler="ilo.customizations.setuphandlers.switchToTiny"
+        title="Switch users to TinyMCE"
+        version="2009-03-01">
+	Switch users to use tinyMCE
+    </import-step>
+
+</import-steps>

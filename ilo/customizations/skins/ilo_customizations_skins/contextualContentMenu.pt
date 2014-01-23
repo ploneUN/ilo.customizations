@@ -1,0 +1,11 @@
+<metal:block use-macro="here/global_defines/macros/defines" />
+<div id="contextualContentMenu"
+      tal:define="plone_view context/@@plone;
+                  view nocall:view | nocall: plone_view;">
+  <ul tal:condition="exists:context/edit" class="base">
+    <li><a tal:attributes="href string:${context/absolute_url}">View Details</a></li>
+    <li><a tal:attributes="href string:${context/absolute_url}/edit" i18n:domain="plone" i18n:translate="">Edit</a></li>
+    <li><a tal:attributes="href string:${context/absolute_url}/sendto_form">Send to </a></li>
+  </ul>
+  <div tal:replace="structure provider:plone.contentmenu" />
+</div>

@@ -1,0 +1,51 @@
+<object name="portal_properties" meta_type="Plone Properties Tool">
+    <object name="ilo_properties" meta_type="Plone Property Sheet">
+        <property name="officeopts" type="lines" purge="False">
+            <element value="ILO Regional Office for Asia and the Pacific"/>
+            <element value="ILO Subregional Office for East Asia"/>
+            <element value="ILO Subregional Office for South-East Asia and the Pacific"/>
+            <element value="ILO Subregional Office for South Asia"/>
+            <element value="Bangladesh"/>
+            <element value="Cambodia" />
+            <element value="China and Mongolia" />
+            <element value="Fiji, Papua New Guinea, Solomon Islands, Kiribati and other South Pacific Islands" />
+            <element value="Indonesia" />
+            <element value="Japan" />
+            <element value="Nepal" />
+            <element value="Pakistan" />
+            <element value="Sri Lanka" />
+            <element value="Viet Nam" />
+            <element value="ILO Coordinator in Afghanistan" />
+            <element value="ILO Liaison Office in Timor-Leste" />
+            <element value="ILO Liaison Office in Myanmar" />
+            <element value="HQ" />
+            <element value="ITC Turin" />
+            </property>
+
+        <property name="themesopts" type="lines" >
+            <element value="Child Labour"/>
+            <element value="Communications and Knowledge Management Services" />
+            <element value="Decent Work"/>
+            <element value="Economic and Social Development"/>
+            <element value="Employment Promotion"/>
+            <element value="Employment Security"/>
+            <element value="Equality and Discrimination"/>
+            <element value="Finance and Administrative Services" />
+            <element value="Forced Labour"/>
+            <element value="Freedom of Association and The Right to Collective Bargaining"/>
+            <element value="HIV/AIDS"/>
+            <element value="Indvidual Sectors and Industries"/>
+            <element value="IT Services" />
+            <element value="Labour Law"/>
+            <element value="Labour Migration"/>
+            <element value="Labour Standards" />
+            <element value="Programme Standards" />
+            <element value="Safety and Health at Work"/>
+            <element value="Skills, Knowledge and Employability"/>
+            <element value="Workers and Employers Organizations, Tripartism and Social Dialogue"/>
+            <element value="Working Conditions"/>
+            <element value="Youth Employment"/>
+        </property>
+    </object>
+</object>
+

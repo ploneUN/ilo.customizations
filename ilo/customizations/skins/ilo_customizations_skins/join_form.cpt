@@ -1,0 +1,436 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+<head>
+    <metal:block fill-slot="top_slot"
+                 tal:define="dummy python:request.set('disable_border',1)" />
+    <metal:block fill-slot="column_one_slot" />
+    <metal:block fill-slot="column_two_slot" />
+</head>
+
+<body>
+
+<div metal:fill-slot="main"
+     tal:define="errors options/state/getErrors;
+                 mailhost context/MailHost/smtp_host|nothing;
+                 mailfrom context/email_from_address|nothing;
+                 site_properties context/portal_properties/site_properties;
+                 allowEnterPassword not:utool/getPortalObject/validate_email|nothing;
+                 mailpw site_properties/validate_email;
+                 ilo_properties context/portal_properties/ilo_properties;
+                 mailconfigured python:allowEnterPassword or (mailhost and mailfrom)">
+
+  <h1 class="documentFirstHeading"
+      i18n:translate="heading_registration_form">Registration Form</h1>
+
+
+  <div tal:condition="not:mailconfigured">
+    <p i18n:translate="no_join_without_configured_mail">
+      This site has not configured its email settings. Until email has
+      been configured it is not possible to create an account.
+    </p>
+  </div>
+  <form action=""
+        class="enableAutoFocus enableUnloadProtection"
+        method="post"
+        tal:condition="mailconfigured"
+        tal:define="allowEnterPassword site_properties/validate_email|nothing;"
+        tal:attributes="action template_id" >
+
+    <fieldset>
+
+      <legend i18n:translate="legend_registration_form">
+          Registration Form
+      </legend>
+
+      <input type="hidden" name="came_from" value=""
+             tal:condition="request/came_from|nothing"
+             tal:attributes="value request/came_from" />
+      <input type="hidden" name="last_visit:date" value="ZopeTime"
+             tal:attributes="value here/ZopeTime" />
+      <input type="hidden" name="prev_visit:date" value="ZopeTime"
+             tal:attributes="value here/ZopeTime" />
+      <input type="hidden" name="came_from_prefs" value=""
+             tal:attributes="value request/came_from_prefs|nothing" />
+
+      <div class="field"
+           tal:define="error errors/username| nothing;
+                       username request/username | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="username"
+               i18n:translate="label_user_name">User Name</label>
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+              <div
+                  i18n:translate="help_user_name_creation_casesensitive">
+                Enter a user name, usually something like
+                'jsmith'. No spaces or special characters.
+                Usernames and passwords are case sensitive,
+                make sure the caps lock key is not enabled.
+                This is the name used to log in. Using the same userid
+                as your ILO email address is recommended.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="text"
+                     name="username"
+                     id="username"
+                     size="30"
+                     value="username"
+                     tal:attributes="value username;"
+                     />
+      </div>
+
+      <div class="field"
+           tal:define="error errors/email | nothing;
+                       email request/email | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="email"
+               i18n:translate="label_email">E-mail</label>
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+              <div class="formHelp" i18n:translate="help_email_creation">
+              Enter your ILO email address. Only valid @ilo.org email addresses are accepted.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="text"
+                     name="email"
+                     id="email"
+                     size="30"
+                     tal:attributes="value email;"
+                     />
+      </div>
+
+
+      <div class="field"
+           tal:condition="not: allowEnterPassword"
+           tal:define="error errors/password | nothing;
+                       password request/password | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="password"
+               i18n:translate="label_password">Password</label>
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+              <div class="formHelp" i18n:translate="help_password_creation">
+                Minimum 5 characters.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="password"
+                     name="password"
+                     id="password"
+                     size="10"
+                     value=""
+                     />
+      </div>
+
+      <div class="field"
+           tal:condition="not: allowEnterPassword"
+           tal:define="error errors/password_confirm | nothing;
+                       password_confirm request/password_confirm | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+
+        <label for="password_confirm"
+               i18n:translate="label_confirm_password">Confirm password</label>
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+              <div class="formHelp" i18n:translate="help_confirm_password">
+                Re-enter the password. Make sure the passwords are identical.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="password"
+                     name="password_confirm"
+                     id="password_confirm"
+                     size="10"
+                     value=""
+                     />
+      </div>
+
+      <div class="field"
+           tal:condition="not: allowEnterPassword"
+           tal:define="mail_me request/mail_me|nothing">
+
+        <input type="checkbox"
+               class="noborder"
+               name="mail_me"
+               size="30"
+               id="cb_mailme"
+               tal:attributes="checked python:test(mail_me, 'checked', None);"
+               />
+        <label for="cb_mailme" i18n:translate="label_mail_password">Send a mail with the password</label>
+      </div>
+
+      <div class="field"
+           tal:condition="allowEnterPassword">
+
+        <div class="formHelp" i18n:translate="label_password_change_mail">
+          A URL will be generated and e-mailed to you; follow the link
+          to reach a page where you can change your password and
+          complete the registration process. 
+        </div>
+      </div>
+
+      <div class="field"
+           tal:define="error errors/fullname| nothing;
+                       fullname request/fullname | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="fullname"
+               i18n:translate="label_full_name">Full Name</label>
+
+        <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+        <div class="formHelp" i18n:translate="help_full_name_creation">
+          Enter full name, eg. John Smith.
+        </div>
+
+        <div tal:content="error">Validation error output</div>
+
+        <input type="text"
+               name="fullname"
+               id="fullname"
+               size="30"
+               value="fullname"
+               tal:attributes="value fullname;"
+               />
+
+      </div>
+
+      <!-- custom fields -->
+
+      <div class="field"
+           tal:define="error errors/jobtitle | nothing;
+                       jobtitle request/jobtitle | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="jobtitle"
+               i18n:translate="label_jobtitle">Job Title</label>
+
+
+              <div class="formHelp" i18n:translate="help_jobtitle_creation">
+                Enter your job title.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="text"
+                     name="jobtitle"
+                     id="jobtitle"
+                     size="30"
+                     value="jobtitle"
+                     tal:attributes="value jobtitle"
+                     />
+      </div>
+
+      <div class="field"
+           tal:define="error errors/skypeid | nothing;
+                       skypeid request/skypeid | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="skypeid"
+               i18n:translate="label_skypeid">Skype ID</label>
+
+
+              <div class="formHelp" i18n:translate="help_skypeid_creation">
+                Enter your skypeid if you have one, and wish fellow
+                colleagues to contact you via Skype.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <input type="text"
+                     name="skypeid"
+                     id="skypeid"
+                     size="30"
+                     value="skypeid"
+                     tal:attributes="value skypeid"
+                     />
+      </div>
+
+
+        <div class="field"
+           tal:define="error errors/office| nothing;
+                       office request/office| nothing;
+                       officeopts ilo_properties/officeopts;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="office"
+               i18n:translate="label_office">Office</label>
+
+               <span class="fieldRequired" title="Required"
+              i18n:attributes="title title_required;"
+              i18n:translate="label_required">(Required)</span>
+
+
+              <div class="formHelp" i18n:translate="help_office_creation">
+                Select your office.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <select name="office"
+                     id="office"
+                     value=""
+                     >
+                   <option value="">----</option>
+                   <option tal:repeat="opts officeopts"
+                           tal:content="opts"
+                           tal:attributes="value opts;
+                                           selected python:test(opts==office, 'selected', None);"
+                           >options</option>
+               </select>
+      </div>
+
+
+      <div class="field"
+           tal:define="error errors/themes | nothing;
+                       themes request/themes | python:[];
+                       themesopts ilo_properties/themesopts;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+        <label for="themes"
+               i18n:translate="label_themes">Interests</label>
+
+              <div class="formHelp" i18n:translate="help_themes">
+                 Click on thematic themes related to information and communication technology for 
+                 development (ICT4D) that you would like to receive further information on (CRTL+click for multiple selections).
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+
+              <select name="themes:list"
+                     id="themes"
+                     value=""
+                     multiple="yes"
+                     >
+                   <option tal:repeat="opts themesopts"
+                           tal:content="opts"
+                           tal:attributes="value opts;
+                                           selected python:test(opts in themes,'selected',None)"
+                                           >options</option>
+               </select>
+      </div>
+
+      <div class="field"
+           tal:define="error errors/conduct| nothing;
+                       conduct request/conduct | nothing;"
+           tal:attributes="class python:test(error, 'field error', 'field')">
+
+          <h1>Code of Conduct</h1>
+
+          <div style="overflow: auto; border: 1px solid; padding: 5px; width:
+              500px; height: 300px; background: #FFFFE3">
+            
+            <p>
+            We want all members to have a safe, interesting and friendly
+            user experience. Accordingly, all users of the KSP and any
+            contributions they make to the KSP must comply with this Code of
+            Conduct. Your use of the KSP means that you accept and agree to abide
+            by this Code of Conduct.  </p>
+            <p>
+            We may need to revise the Code of Conduct from time to time by
+            amending this page.  Users will be notified of any changes by a
+            notice on the website.  However, please review this page
+            regularly to ensure you are aware of any changes.  </p>
+            <p>
+            If you reasonably believe that any contribution to the KSP made by
+            another user contravenes this Code of Conduct, please notify 
+            <a href="mailto://arvling@ilo.org">Johan Arvling</a>.
+            Within this Code of Conduct, "contribution" means any material
+            posted or uploaded to the KSP by a member e.g. text, files, documents,
+            presentations, photographs, graphics, video or audio material.
+            </p>
+            <p>
+            <b>
+            Your contributions must not:
+            </b>
+            </p>
+            <ul>
+                <li>
+                contain unlawful or objectionable content nor involve disruptive, offensive or abusive behavior. Please be respectful and civil to other members, even if you disagree with them. 
+                </li>
+                <li>
+                infringe on anyone else's rights, including copyright i.e. including trade marks, database, trade secret, privacy, publicity, personal or proprietary rights of any kind.
+                </li>
+                <li>
+            contain unsuitable or irrelevant website addresses or URLs  i.e. links to inappropriate content will be removed.
+            </li>
+            <li>
+            promote illegal or anti-social behavior i.e. contributions must not contain violent or sexually explicit material or advocate, promote or assist any unlawful act e.g. terrorist acts, copyright infringement or computer misuse.
+            </li>
+            <li>
+            misrepresent their origins i.e. contributions and/or user names may not be used to impersonate any other person, to misrepresent your identity or affiliation with any person or organization. Impersonating another user whilst online may result in membership exclusion 
+            </li>
+            <li>
+            involve any flooding, spamming or advertising.
+            </li>
+            </ul>
+        </div>
+
+      <label for="conduct"
+               i18n:translate="label_conduct">Agree to Code of Conduct?</label>
+
+
+              <div class="formHelp" i18n:translate="help_conduct">
+                  Please click on the check box below if you agree with
+                  the ILO Knowledge Sharing Platform Code of Conduct.
+              </div>
+
+              <div tal:content="error">Validation error output</div>
+              
+              <input type="checkbox"
+                     name="conduct"
+                     id="conduct"
+                     value="agree"
+                     tal:attributes="checked python:test(conduct, 'agree', None);"
+                     /> Yes I agree to abide by the KSP Code of Conduct.
+      </div>
+
+      <div class="formControls">
+        <input class="context"
+               type="submit"
+               name="form.button.Register"
+               value="Register"
+               i18n:attributes="value label_register;" />
+      </div>
+
+    </fieldset>
+
+    <input type="hidden" name="form.submitted" value="1" />
+
+    <input tal:replace="structure context/@@authenticator/authenticator" />
+
+  </form>
+</div>
+
+</body>
+</html>

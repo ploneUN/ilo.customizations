@@ -1,0 +1,98 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain="ilo.customizations">
+
+    <include file="profiles.zcml" />
+    <include package="plone.app.controlpanel" file="permissions.zcml"/>
+
+    <browser:resourceDirectory
+        name="jqueryui-theme"
+        directory="jqueryui"
+        />
+
+    <grok:grok package="."/>
+    <browser:page
+        name="ilomember_util"
+        class=".browser.MemberUtil"
+        permission="zope2.View"
+        for="*"
+        />
+
+    <include package="z3c.jbot" file="meta.zcml"/>
+    <browser:jbot directory="jbot"/>
+
+    <adapter factory=".eventprovider.ATEventProvider" />
+    <adapter factory=".eventprovider.ATEventCreator" />
+    <adapter factory=".eventprovider.TopicEventProvider" />
+    <adapter factory=".eventprovider.TopicEventCreator" />
+    <adapter factory=".eventprovider.BrainEvent" />
+    <adapter factory=".eventprovider.RecurringBrainEvent"
+        provides="dateable.kalends.ITimezonedRecurringEvent" />
+    <adapter factory="plone.app.imaging.traverse.ImageTraverser"
+        for="Products.ATContentTypes.interfaces.image.IATImage
+        zope.publisher.interfaces.IRequest"/>
+    <adapter 
+        factory=".userschema.EnhancedUserDataPanelAdapter"
+        for="Products.CMFCore.interfaces.ISiteRoot"
+        />
+
+    <five:implements
+        class="plone.app.blob.content.ATBlob"
+        interface="atreal.richfile.qualifier.interfaces.IFileQualifiable"
+        />
+
+<!--    <five:implements
+        class="plone.app.blob.content.ATBlob"
+        interface="from atreal.richfile.preview.interfaces.IPreviewable"
+        />
+-->
+
+<!-- <five:implements class="plone.app.blob.content.ATBlob"
+              interface="Products.ARFilePreview.interfaces.IPreviewAware
+              zope.annotation.interfaces.IAttributeAnnotatable" />
+-->
+
+    <utility factory=".vocabulary.Offices"
+        name="ilo.offices"/>
+
+    <utility factory=".vocabulary.Themes"
+        name="ilo.themes"/>
+
+    <browser:page
+        for="Products.CMFPlone.Portal.PloneSite"
+        name="personal-information"
+        class=".userschema.CustomizedUserDataPanel"
+        permission="cmf.SetOwnProperties"
+        />
+
+    <browser:page
+        for="Products.CMFPlone.Portal.PloneSite"
+        name="list_expired_members"
+        class=".browser.LDAPCompareView"
+        permission="cmf.ManagePortal"
+        template="list_expired_members.pt"
+        />
+
+    <browser:page
+        for="Products.CMFPlone.Portal.PloneSite"
+        name="user-information"
+        class=".userschema.CustomizedUserDataConfiglet"
+        permission="plone.app.controlpanel.UsersAndGroups"
+        />
+
+    <subscriber
+        for="plone.app.discussion.interfaces.IComment
+        zope.app.container.interfaces.IObjectAddedEvent"
+        handler=".subscriber.notify_owner"
+        />
+
+    <adapter name="file_type" factory=".indexer.missionreport_file_type"/>
+    <adapter name="file_type" factory=".indexer.iloevent_file_type"/>
+    <adapter name="file_type" factory=".indexer.atfile_file_type"/>
+    <adapter name="creator_fullname" factory=".indexer.atct_creator_fullname"/>
+    <adapter name="creator_fullname" factory=".indexer.dexterity_creator_fullname"/>
+
+</configure>

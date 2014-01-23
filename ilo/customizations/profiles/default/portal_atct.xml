@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<atcttool>
+ <topic_indexes>
+ <index name="file_type"
+    description="File type"
+    enabled="True"
+    friendlyName="File type">
+
+    <criteria>ATSelectionCriterion</criteria>
+    <criteria>ATSimpleStringCriterion</criteria>
+
+ </index>
+ </topic_indexes>
+
+ <topic_metadata>
+     <metadata name="file_type"
+        description="File type"
+        enabled="True"
+        friendlyName="File type"/>
+ </topic_metadata>
+</atcttool>

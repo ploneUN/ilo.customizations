@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- This file holds the setup configuration for the portal_skins tool -->
+
+<object name="portal_skins">
+
+ <object name="ilo_customizations_skins"
+    meta_type="Filesystem Directory View"
+    directory="ilo.customizations:skins/ilo_customizations_skins"/>
+
+ <skin-path name="*">
+   <layer name="ilo_customizations_skins"
+        insert-after="custom"/>
+ </skin-path>
+
+
+</object>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_memberdata" meta_type="Plone Memberdata Tool">
+ <property name="jobtitle" type="string"></property>
+ <property name="skypeid" type="string"></property>
+ <property name="office" type="string"></property>
+ <property name="themes" type="lines"></property>
+ <property name="conduct" type="string"></property>
+ <property name="wysiwyg_editor" type="string">TinyMCE</property>
+</object>

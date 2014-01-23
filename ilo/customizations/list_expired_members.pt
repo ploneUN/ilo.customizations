@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    lang="en"
+    metal:use-macro="context/prefs_main_template/macros/master"
+    i18n:domain="plone">
+
+<body>
+
+<metal:main fill-slot="prefs_configlet_content"
+    tal:define="template_id string:list_expired_members;
+                Batch python:modules['Products.CMFPlone'].Batch;
+                b_start python:request.get('b_start',0);
+                b_size python:20;
+                portal_roles python:[];
+                portal_url context/portal_url;">
+
+    <div class="documentEditable">
+
+        <div metal:use-macro="context/global_statusmessage/macros/portal_message">
+          Portal status message
+        </div>
+
+        <div id="content">
+            <h1 class="documentFirstHeading">Expired Users</h1>
+
+            <div id="content-core">
+                <a href=""
+                   class="link-parent"
+                   tal:attributes="href string:$portal_url/plone_control_panel"
+                   i18n:translate="label_up_to_plone_setup">
+                  Up to Site Setup
+                </a>
+                <p i18n:translate="description_user_management">
+                These users no longer exist in the LDAP server. 
+                  Click the user's name to see and change the details of a
+                  specific user. You can also remove the users.
+                </p>
+
+                <form action=""
+                      class="enableAutoFocus"
+                      name="users_search"
+                      method="post"
+                      tal:attributes="action string:$portal_url/$template_id"
+                      tal:define="findAll python:'form.button.FindAll' in request.keys();
+                                  portal_users view/searchResults;
+                                  batch python:Batch(portal_users, b_size, int(b_start), orphan=1);">
+                  <input type="hidden" name="form.submitted" value="1" />
+
+                  <table class="listing" summary="User Listing">
+                      <tbody>
+                          <tal:block tal:condition="portal_users" >
+                          <tr class="odd">
+                              <th i18n:translate="listingheader_user_name">User name</th>
+                              <th>Email</th>
+
+                              <th>Last Login</th>
+                              <th i18n:translate="listingheader_remove_user">Remove user</th>
+                          </tr>
+                          </tal:block>
+                          <tal:block repeat="user batch">
+                            <tr tal:define="oddrow repeat/user/odd;
+                                            userid user/id;
+                                            userquery python:view.makeQuery(userid=userid);"
+                                tal:attributes="class python:oddrow and 'odd' or 'even'">
+
+                                <td>
+                                    <a href="@@user-information"
+                                       tal:attributes="href string:$portal_url/@@user-information?${userquery}">
+                                        <tal:block replace="structure context/portal_url/user.png"/>&nbsp;<span tal:replace="user/fullname">Full Name</span>
+                                        (<span tal:replace="userid">username</span>)
+                                    </a>
+                                    <input type="hidden" name="users.id:records" tal:attributes="value userid" />
+                                 </td>
+
+                                 <td tal:content="user/email"></td>
+
+                                 <td tal:content="user/last_login_time"></td>
+                                <td class="listingCheckbox">
+                                  <input type="checkbox"
+                                                 class="noborder notify"
+                                                 name="delete:list"
+                                                 value=""
+                                                 tal:attributes="value userid;
+                                                                 disabled python:user['can_delete'] and default or 'disabled'" />
+                                </td>
+                            </tr>
+                          </tal:block>
+                      </tbody>
+                  </table>
+
+                  <div metal:use-macro="context/batch_macros/macros/navigation" />
+
+                  <input type="hidden" value="b_start" name="b_start"
+                         tal:attributes="value b_start"/>
+
+                  <input class="context"
+                     type="submit"
+                     name="form.button.Modify"
+                     value="Apply Changes"
+                     i18n:attributes="value label_apply_changes;"
+                     tal:condition="batch"
+                     />
+
+                  <input tal:replace="structure context/@@authenticator/authenticator" />
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</metal:main>
+
+</body>
+</html>
+
