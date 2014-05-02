@@ -4,7 +4,7 @@ Changelog
 0.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Update wording of Pasting from Word #1050
 
 
 0.8 (2014-02-13)

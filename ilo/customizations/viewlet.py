@@ -42,6 +42,8 @@ class RemindToUsePasteFromWord(grok.Viewlet):
                         Please use the "Paste from Word" 
                         <img src="pastefromword.gif"/>
                         feature on the editor when pasting from Word.
+                        Firefox should be the preferred browser when
+                        you draft your mission report
                     </dd>
                 </dl></div>
             '''
